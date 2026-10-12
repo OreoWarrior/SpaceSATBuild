@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1024" />
+    <meta name="description" content="SpaceSATBuild satellite design interface." />
+    <title>SpaceSATBuild — Satellite Designer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#builder"><span class="brand-mark">✦</span><span>SPACE<span class="brand-accent">SAT</span>BUILD</span></a>
+      <nav class="top-nav" aria-label="Main navigation" role="tablist"><button class="active" id="builder-tab" data-page="builder" type="button" role="tab" aria-selected="true" aria-controls="builder">Builder</button><button id="workspace-tab" data-page="workspace" type="button" role="tab" aria-selected="false" aria-controls="workspace-column">Workspace</button><button id="about-tab" data-page="about" type="button" role="tab" aria-selected="false" aria-controls="about-page">About Me</button></nav>
+      <div class="top-actions"><span class="save-state"><i></i> LOCAL DESIGN</span><button class="file-action" id="export-design" type="button" title="Export design as a text file" aria-label="Export design"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3" /></svg></button><button class="file-action" id="import-design" type="button" title="Import a design text file" aria-label="Import design"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4 4 4M5 17v3h14v-3" /></svg></button><input id="design-file-input" type="file" accept=".txt,.json,text/plain,application/json" hidden><button class="share-button" id="design-button">Review design <span>→</span></button></div>
+    </header>
+
+    <main class="builder-layout" id="builder">
+      <aside class="left-rail">
+        <section class="rail-section profile-section"><p class="eyebrow">NEW SPACECRAFT</p><label class="name-label" for="satellite-name">Design name</label><input id="satellite-name" class="name-input" value="Pioneer-01" maxlength="22" /><div class="draft-line"><span>DESIGN DRAFT</span><span class="draft-dot"></span></div></section>
+        <section class="rail-section mission-section"><div class="section-top"><p class="eyebrow">01 / CHOOSE A MISSION</p><span class="step-check">1</span></div><h2>What should it do?</h2><div class="mission-list" id="mission-list"></div></section>
+        <section class="rail-section guide-section"><span class="guide-icon">✧</span><p class="eyebrow">DESIGN TIP</p><p>These are real product examples. Check interfaces, fit, and mission needs before combining hardware.</p></section>
+        <div class="rail-bottom"><span class="online-dot"></span> Builder ready <span class="version">v0.1</span></div>
+        <section class="sat-stats" aria-label="Live satellite statistics"><div class="sat-stats-heading"><div><p class="eyebrow">LIVE DESIGN PROFILE</p><h3>Satellite stats</h3></div><span class="live-badge"><i></i> LIVE</span></div><div class="satellite-radar" id="satellite-radar"></div><div class="sat-stats-details" id="sat-stats-details"></div><p class="sat-stats-note">Each axis scales to the highest listed option; this is not an engineering score. Mass is partial when a selected part has no published mass here.</p></section>
+      </aside>
+
+      <section class="workspace-column">
+        <div class="workspace-heading"><div><p class="eyebrow">SPACECRAFT WORKSPACE <span>/</span> CONFIGURATION</p><h1 id="mission-title">Earth observation satellite</h1><p id="mission-description">Capture images of Earth for mapping and environmental monitoring.</p></div></div>
+        <section class="preview-panel" aria-label="Satellite design preview">
+          <div class="preview-toolbar"><div class="preview-label"><span class="preview-dot"></span> DESIGN PREVIEW <span class="separator">/</span> <span id="preview-mission">EARTH OBSERVATION</span></div><div class="preview-tools"><button type="button" id="rotate-view" title="Rotate satellite view">⟳</button><button type="button" id="zoom-view" title="Zoom satellite view">＋</button><button type="button" id="reset-view" title="Reset satellite view">⌂</button></div></div>
+          <div class="space-scene" id="space-scene"><div class="stars stars-back"></div><div class="stars stars-front"></div><div class="earth"><div class="earth-glow"></div><div class="earth-surface"></div><div class="earth-clouds"></div></div><div class="satellite-model" id="satellite-model"><div class="solar-wing wing-left"><i></i><i></i><i></i></div><div class="solar-wing wing-right"><i></i><i></i><i></i></div><div class="antenna-dish"></div><div class="antenna-stem"></div><div class="satellite-core"><span class="core-window"></span><strong id="satellite-mark">P-01</strong><span class="battery-pack-shape"></span></div><div class="camera-module"></div><div class="sensor-module"></div><div class="thruster-module"></div><div class="startracker-module"></div><div class="thermal-panels"></div><div class="deployable-antenna"></div><div class="custom-module"></div><div class="orbit-ring"></div></div><div class="scene-caption"><span>ORBITAL VIEW</span><span>CONCEPT RENDER</span></div><div class="axis-indicator"><span>X</span><span>Y</span><span>Z</span></div></div>
+          <div class="preview-footer"><span><b class="legend-swatch"></b> Satellite body</span><span><b class="legend-swatch blue"></b> Solar array</span><span class="preview-note">Visual preview updates with your components</span></div>
+        </section>
+        <section class="metric-strip" aria-label="Selected published product specifications"><article><span class="metric-icon mass-icon">⚖</span><div><p>Payload allowance</p><strong id="mass-value">—</strong></div><span class="metric-tag">BUS</span></article><article><span class="metric-icon power-icon">ϟ</span><div><p>Available payload power</p><strong id="power-value">—</strong></div><span class="metric-tag" id="power-tag">BUS SPEC</span></article><article><span class="metric-icon battery-icon">▰</span><div><p>Battery capacity</p><strong id="battery-value">—</strong></div><span class="metric-tag">DATASHEET</span></article><article><span class="metric-icon cost-icon">◈</span><div><p>Solar array output</p><strong id="cost-value">—</strong></div><span class="metric-tag">MAX IN LEO*</span></article></section>
+        <section class="satellite-rating-card" aria-label="Live satellite rating"><div class="rating-heading"><div><p class="eyebrow">LIVE DESIGN RATING</p><h2>Satellite rating</h2></div><span class="live-badge"><i></i> LIVE</span></div><div class="rating-overview"><div class="rating-stars" role="img" id="rating-stars" aria-label="Satellite rating"><span class="rating-stars-empty">★★★★★</span><span class="rating-stars-fill" id="rating-stars-fill">★★★★★</span></div><div class="rating-number"><strong id="satellite-rating-value">0</strong><span>/ 5</span></div><span class="rating-label" id="satellite-rating-label">Building</span></div><div class="rating-criteria" id="rating-criteria"></div><p class="rating-disclaimer">Prototype completeness rating based on five system categories. It does not measure real-world mission performance.</p></section>
+        <section class="bottom-card" id="design-summary"><div><p class="eyebrow">DESIGN SUMMARY</p><h2>Your spacecraft at a glance</h2></div><p id="summary-copy">Select systems to see how they shape your satellite design.</p><span class="summary-indicator"><i></i> Prototype interface</span></section>
+      </section>
+
+      <aside class="right-rail" id="components">
+        <section class="component-header"><div class="section-top"><p class="eyebrow">02 / ADD SYSTEMS</p><span class="step-check">2</span></div><h2>Real hardware references</h2><p>Published products; compatibility depends on your mission and integration design.</p></section>
+        <button class="custom-component-button" id="add-custom-component" type="button"><span>＋</span> Add custom component</button>
+        <div class="component-groups" id="component-groups"></div>
+        <section class="readiness-card"><div class="readiness-title"><div><p class="eyebrow">CATALOG CHECK</p><h3>Selected references</h3></div><span id="system-count">0 products</span></div><div id="design-checks"></div><p class="estimate-note">*Solar output is a manufacturer maximum for stated conditions. These selections are not a verified spacecraft design.</p></section>
+      </aside>
+    </main>
+
+    <main class="about-page" id="about-page" hidden>
+      <section class="about-profile-card">
+        <div class="about-avatar" aria-hidden="true">✦</div>
+        <h1>Oreo Warrior</h1>
+        <p class="about-role">Creator &amp; Developer</p>
+        <p class="about-tagline">A COOL GUY.</p>
+        <div class="about-social-links" aria-label="Social profiles"><a href="https://github.com/OreoWarrior" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.youtube.com/@Oreo_Warrior" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://modrinth.com/user/Oreo_Warrior" target="_blank" rel="noopener noreferrer">Modrinth</a></div>
+      </section>
+
+      <section class="about-content" aria-labelledby="about-project-heading">
+        <h2 class="eyebrow" id="about-project-heading">ABOUT THE CREATOR</h2>
+        <article class="about-info-card"><h3>💡 Why it exists</h3><p>Night shift workers face unique challenges: fatigue, isolation, and mental health struggles. NightShift Buddy was built to provide immediate, compassionate support right at your fingertips.</p></article>
+        <article class="about-info-card"><h3>🎯 Core features</h3><p>Fatigue tracking, AI mental wellness support, handoff management, and smart scheduling tools — all designed with healthcare workers in mind.</p></article>
+        <article class="about-info-card"><h3>💗 Our mission</h3><p>To reduce fatigue-related errors, prevent burnout, and foster a culture of mental wellness in healthcare. You deserve support. You are not alone.</p></article>
+      </section>
+
+      <section class="about-built" aria-labelledby="built-with-heading">
+        <h2 class="eyebrow" id="built-with-heading">BUILT WITH</h2>
+        <div class="about-built-grid">
+          <article><h3>HTML5 &amp; CSS3</h3><p>Modern, responsive design</p></article>
+          <article><h3>Vanilla JavaScript</h3><p>Fast, lightweight interactions</p></article>
+          <article><h3>AI Support</h3><p>Mock responses for wellness</p></article>
+          <article><h3>Mobile First</h3><p>Works everywhere you are</p></article>
+        </div>
+      </section>
+      <footer class="about-footer">Built by Oreo Warrior</footer>
+    </main>
+
+    <dialog class="review-dialog" id="review-dialog"><form method="dialog"><button class="close-dialog" aria-label="Close">×</button></form><p class="eyebrow">CONFIGURATION REVIEW</p><h2 id="review-name">Pioneer-01</h2><p id="review-copy">Your selected hardware references will appear here.</p><div class="review-stats" id="review-stats"></div><div class="dialog-foot">Product specifications are linked in the component list. Compatibility and mission performance still require engineering review.</div></dialog>
+    <dialog class="custom-component-dialog" id="custom-component-dialog">
+      <form id="custom-component-form">
+        <button class="close-dialog" id="close-custom-component" type="button" aria-label="Close">×</button>
+        <p class="eyebrow">YOUR HARDWARE</p><h2>Add a custom component</h2>
+        <p class="custom-form-intro">Custom entries are your own notes and are not manufacturer-verified.</p>
+        <label>Component name<input name="name" required maxlength="48" placeholder="e.g. Custom UHF antenna"></label>
+        <label>Category<select name="category" required><option value="Satellite bus">Satellite bus</option><option value="Battery packs">Battery packs</option><option value="Solar hardware">Solar hardware</option><option value="Attitude control">Attitude control</option><option value="Propulsion">Propulsion</option><option value="Payload">Payload</option><option value="Communications">Communications</option><option value="Antennas">Antennas</option><option value="Other">Other</option></select></label>
+        <label>Mass in kg <span>(optional)</span><input name="mass" type="number" min="0" step="0.001" placeholder="Leave blank if unknown"></label>
+        <p class="custom-spec-heading">Optional specifications <span>Only fill in what applies.</span></p>
+        <div class="custom-spec-grid">
+          <label>Battery capacity · Wh<input name="capacity" type="number" min="0" step="0.1" placeholder="e.g. 89"></label>
+          <label>Solar output · W<input name="solarPower" type="number" min="0" step="0.1" placeholder="e.g. 19.2"></label>
+          <label>Payload power · W<input name="payloadPower" type="number" min="0" step="0.1" placeholder="e.g. 15"></label>
+          <label>Data rate · Mbps<input name="downlinkMbps" type="number" min="0" step="0.1" placeholder="e.g. 140"></label>
+          <label>Payload limit · kg<input name="payloadMass" type="number" min="0" step="0.1" placeholder="e.g. 7"></label>
+          <label>Power draw · W<input name="powerDraw" type="number" min="0" step="0.1" placeholder="e.g. 5"></label>
+        </div>
+        <label>Specs or notes <span>(optional)</span><textarea name="details" maxlength="140" rows="2" placeholder="Add useful specs or notes"></textarea></label>
+        <label>Source link <span>(optional)</span><input name="source" type="url" placeholder="https://…"></label>
+        <p class="custom-form-error" id="custom-form-error" role="alert"></p>
+        <div class="custom-form-actions"><button type="button" class="secondary-action" id="cancel-custom-component">Cancel</button><button type="submit" class="primary-action">Add to design</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>
